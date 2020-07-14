@@ -84,7 +84,7 @@ Function Get-Folder($initialDirectory)
 $Folder = Get-Folder $env:USERPROFILE
 
 #If the game folder has data it will copy it to the new folder.
-if (Get-ChildItem "$env:USERPROFILE\AppData\LocalLow\InXile Entertainment\Torment\")
+if (Test-Path "$env:USERPROFILE\AppData\LocalLow\InXile Entertainment\Torment\")
 {
 	Robocopy "$env:USERPROFILE\AppData\LocalLow\InXile Entertainment\Torment\" $Folder /XO /E /MOVE /Z
 	
@@ -94,13 +94,12 @@ if (Get-ChildItem "$env:USERPROFILE\AppData\LocalLow\InXile Entertainment\Tormen
 		New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\AppData\LocalLow\InXile Entertainment\Torment\" -Target "$Folder"
 		
 		#If Registry Key exists changes it to the new value, else it creates a new RegKey.
-		if (Get-ChildItem -Path "HKCU:\CloudSync\Torment" -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -like "TormentPath" }) {
-			Set-ItemProperty -Path "HKCU:\CloudSync\Torment" -Name "TormentPath" -Value "$Folder"
+		if (Test-Path "HKCU:\Software\TormentCloudSync\") {
+			Set-Item -Path "HKCU:\Software\TormentCloudSync\" -Value "$Folder"
 		}
 
 		else{
-			New-Item -Path "HKCU:\CloudSync\" -Name "Torment"
-			New-ItemProperty -Path "HKCU:\CloudSync\Torment" -Name "TormentPath" -Value "$Folder"  -PropertyType "String"
+			New-Item -Path "HKCU:\Software\TormentCloudSync\" -Value "$Folder"
 		}
 
 		Read-HostTimeout -prompt "Installed successfully." -delayInSeconds 15

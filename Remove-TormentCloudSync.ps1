@@ -1,3 +1,4 @@
+#Requires -RunAsAdministrator
 Function read-HostTimeout {
 ###################################################################
 ##  Description:  Mimics the built-in "read-host" cmdlet but adds an expiration timer for
@@ -71,22 +72,21 @@ $finalString = -join $charArray
 return $finalString
 }
 
-if (Get-ChildItem -Path "HKCU:\CloudSync\Torment" -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -like "TormentPath" }) {
-    $SyncFolder = Get-ChildItem -Path "HKCU:\CloudSync\Torment" -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -like "TormentPath" }
+if (Test-Path "HKCU:\Software\TormentCloudSync\") {
+    $SyncFolder = Get-Item -Path "HKCU:\Software\TormentCloudSync\"
     (Get-Item "$env:USERPROFILE\AppData\LocalLow\InXile Entertainment\Torment\").Delete()
     New-Item -ItemType Directory -Path "$env:USERPROFILE\AppData\LocalLow\InXile Entertainment\Torment\"
-    Remove-ItemProperty -Path "HKCU:\CloudSync\Torment" -Name "TormentPath"
-    Remove-Item -Path "HKCU:\CloudSync\" -Name "Torment" -Recurse
+    Remove-Item -Path "HKCU:\Software\TormentCloudSync\" -Recurse
 
     Robocopy $SyncFolder "$env:USERPROFILE\AppData\LocalLow\InXile Entertainment\Torment\" /E
     
     if ($lastExitCode -lt 5){
 
-        Read-HostTimeout -prompt "Files successfully restored. Symlink deleted." -delayInSeconds 15
+        Read-HostTimeout -prompt "Files successfully restored. RegKey Removed. Symlink deleted." -delayInSeconds 15
     }
     
     else{
-        Read-HostTimeout -prompt "Files not successfully restored. Symlink deleted." -delayInSeconds 15
+        Read-HostTimeout -prompt "Files not successfully restored. RegKey Removed. Symlink deleted." -delayInSeconds 15
     }
     
 }
