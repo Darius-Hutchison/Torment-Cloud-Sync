@@ -1,3 +1,4 @@
 *.json
 package.psd1
 out
+*.code-workspace
