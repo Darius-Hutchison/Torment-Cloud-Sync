@@ -1,5 +1,7 @@
 #Requires -RunAsAdministrator
+#Requires -Module PS-Menu
 
+Import-Module PS-Menu
 Function read-HostTimeout {
     ###################################################################
     ##  Description:  Mimics the built-in "read-host" cmdlet but adds an expiration timer for
@@ -144,23 +146,22 @@ function Remove-Sync {
 
 
  function Select-Install{
-    $sel = Read-Host -Prompt "Do you want to (I)nstall, (R)emove, or (C)ancel?"
-    ($sel).ToLower()
+    $sel = menu ("Install", "Remove", "Cancel")
     return $sel
 }
 
 $Selection = Select-Install
 
 
-if ($Selection -like "i" -or  $Selection -like "install"){
+if ($Selection -like "Install"){
     Install-Sync
 }
 
-elseif ($Selection -like "r" -or $Selection -like "remove") {
+elseif ($Selection -like "Remove") {
     Remove-Sync
 }
 
-elseif ($Selection -like "c" -or $Selection -like "cancel") {
+elseif ($Selection -like "Cancel") {
     
 }
 
