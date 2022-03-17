@@ -21,3 +21,5 @@ Only Microsoft Windows is supported.
 ## License
 
 This work is Licensed under GPL v3.
+
+This project is achived as there are probably better solutions than this.
